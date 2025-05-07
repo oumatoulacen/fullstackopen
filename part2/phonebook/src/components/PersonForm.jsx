@@ -1,18 +1,29 @@
 import phonebookService from "../services/phonebooks"
 
-export default function PersonForm({ persons, newName, newNumber, setPersons, setNewName, setNewNumber }) {
+export default function PersonForm({
+  persons, newName, newNumber, setPersons, setNewName, setNewNumber
+  , setNotification
+}) {
+
+
   const handleSubmit = (event) => {
     event.preventDefault() // Prevent the default form submission behavior
 
     // Check if the name already exists
     if (persons.some(person => person.name.toLowerCase() === newName.toLowerCase())) {
-      alert(`${newName} is already added to phonebook`)
+      setNotification({message:`${newName} is already added to phonebook`, type:'error'})
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
       return
     }
 
     // Check if newNumber is valid
     if (!/^[\d-]+$/.test(newNumber)) {
-      alert('Number can only contain digits and dashes')
+      setNotification({message: 'Invalid number format. Please enter a valid phone number.', type:'error'})
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
       return
     }
 
@@ -25,13 +36,19 @@ export default function PersonForm({ persons, newName, newNumber, setPersons, se
         phonebookService
           .updatePhonebook(personToUpdate.id, updatedPerson)
           .then((response) => {
-            console.log('Updated person:', response)
+            setNotification({message: `Updated existing number ${newNumber} with new name ${newName}`, type: 'info'})
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
             // Update the person in the state;
             setPersons(persons.map(person => person.id !== personToUpdate.id ? person : response))
           })
           .catch((error) => {
             console.error('Error updating person:', error)
-            alert('Failed to update person. Please try again.')
+            setNotification({message: 'Failed to update person. Please try again.', type: 'error'})
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
           })
         setNewNumber('')
         setNewName('')
@@ -50,10 +67,18 @@ export default function PersonForm({ persons, newName, newNumber, setPersons, se
       .createPhonebook(personObject)
       .then((response) => {
         setPersons(persons.concat(response))
+        setNotification({ message: `Added ${newName} with number ${newNumber}`, type: 'info'}) 
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+        
       })
       .catch((error) => {
-        console.error('Error adding person:', error)
-        alert('Failed to add person. Please try again.')
+        console.error('Error adding person:', error)  
+        setNotification({message: 'Failed to add person. Please try again.', type: 'error'})
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
       })
 
     // Clear the input fields

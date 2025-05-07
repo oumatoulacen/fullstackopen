@@ -29,16 +29,6 @@
       "name": "Jane Smith",
       "number": "987-654-3210",
       "id": "6"
-    },
-    {
-      "name": "Alice Johnson",
-      "number": "555-1234",
-      "id": "7"
-    },
-    {
-      "id": "a403",
-      "name": "werty",
-      "number": "2345"
     }
   ]
 }

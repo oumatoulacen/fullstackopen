@@ -4,6 +4,7 @@ import phonebookService from './services/phonebooks'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
 
 
 
@@ -12,6 +13,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     console.log('effect')
@@ -34,6 +36,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      { notification && <Notification message={notification?.message} type={notification?.type} /> }
       <div>
         filter shown with <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
       </div>
@@ -46,9 +49,10 @@ const App = () => {
         setPersons={setPersons}
         setNewName={setNewName}
         setNewNumber={setNewNumber}
+        setNotification={setNotification}
       />
       <h2>Numbers</h2>
-      <Persons persons={persons} setPersons={setPersons} />
+      <Persons persons={persons} setPersons={setPersons} setNotification={setNotification} />
     </div>
   )
 }

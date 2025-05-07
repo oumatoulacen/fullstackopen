@@ -1,16 +1,23 @@
 import phonebookService from "../services/phonebooks";
 
-export default function Persons({persons, setPersons}) {
+export default function Persons({persons, setPersons, setNotification}) {
   const deletePhonebook = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
       phonebookService
         .deletePhonebook(id)
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id));
+          setNotification({message: `Deleted ${name}`, type: 'info'});
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
         })
         .catch((error) => {
           console.error('Error deleting person:', error);
-          alert('Failed to delete person. Please try again.');
+          setNotification({message: `Information of ${name} has already been removed from server`, type: 'error'});
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
         });
     }
   }
