@@ -1,61 +1,112 @@
-import { useState, useEffect } from 'react'
-import phonebookService from './services/phonebooks'
+import { useEffect, useState } from 'react'
 
-import Persons from './components/Persons'
-import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Notification from './components/Notification'
-
-
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [notification, setNotification] = useState(null)
+  const [filter, setFilter] = useState('')
+  const [notification, setNotification] = useState({ message: null })
 
   useEffect(() => {
-    console.log('effect')
-    phonebookService
-      .getAllPhonebooks()
-      .then(initialPersons => {
-        setPersons(initialPersons)
-      })
-      .catch(error => {
-        console.error('Error fetching phonebooks:', error)
-        alert('Failed to fetch phonebooks. Please try again later.')
-      })
-    
+    personService.getAll().then((initialPersons) => {
+      setPersons(initialPersons)
+    })
+  }, [])
+
+  const personsToShow = persons.filter((person) =>
+    person.name.toLowerCase().includes(filter.toLowerCase())
+  )
+
+  const clearForm = () => {
+    setNewName('')
+    setNewNumber('')
   }
-  , [])
 
-  console.log('render', persons.length, 'persons')
+  const notifyWith = (message, isError = false) => {
+    setNotification({ message, isError })
+    setTimeout(() => {
+      setNotification({ message: null })
+    }, 5000)
+  }
 
+  const updatePerson = (person) => {
+    const ok = window.confirm(
+      `${newName} is already added to phonebook, replace the old number with a new one?`
+    )
+    if (ok) {
+      personService
+        .update({ ...person, number: newNumber })
+        .then((updatedPerson) => {
+          setPersons(
+            persons.map((p) => (p.id !== person.id ? p : updatedPerson))
+          )
+          notifyWith(`Phonenumber of ${updatedPerson.name} updated!`)
+          clearForm()
+        })
+        .catch(() => {
+          notifyWith(
+            `Information of ${person.name} has already been removed from server`,
+            true
+          )
+          setPersons(persons.filter((p) => p.name !== person.name))
+        })
+    }
+  }
+
+  const onAddNew = (event) => {
+    event.preventDefault()
+    const existingPerson = persons.find((p) => p.name === newName)
+
+    if (existingPerson) {
+      updatePerson(existingPerson)
+      return
+    }
+
+    personService
+      .create({ name: newName, number: newNumber })
+      .then((createdPerson) => {
+        setPersons(persons.concat(createdPerson))
+        notifyWith(`Added ${createdPerson.name}`)
+        clearForm()
+      })
+  }
+
+  const onRemove = (person) => {
+    const ok = window.confirm(`Delete ${person.name} ?`)
+    if (ok) {
+      personService
+        .remove(person.id)
+        .then(() => setPersons(persons.filter((p) => p.id !== person.id)))
+
+      notifyWith(`Deleted ${person.name}`)
+    }
+  }
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      { notification && <Notification message={notification?.message} type={notification?.type} /> }
-      <div>
-        filter shown with <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-      </div>
-      { searchTerm && <Filter persons={persons} searchTerm={searchTerm} /> }
+      <h1>Phonebook</h1>
+      <Notification notification={notification} />
+      <Filter filter={filter} setFilter={setFilter} />
+
       <h2>Add a new</h2>
       <PersonForm
-        persons={persons}
         newName={newName}
         newNumber={newNumber}
-        setPersons={setPersons}
+        onAddNew={onAddNew}
         setNewName={setNewName}
         setNewNumber={setNewNumber}
-        setNotification={setNotification}
       />
+
       <h2>Numbers</h2>
-      <Persons persons={persons} setPersons={setPersons} setNotification={setNotification} />
+      <Persons persons={personsToShow} onRemove={onRemove} />
     </div>
   )
 }
-
 
 export default App
