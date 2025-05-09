@@ -1,0 +1,7 @@
+PUT http://127.0.1:3001/api/notes/3
+Content-Type: application/json
+
+{
+  "title": "Updated Note",
+  "content": "This is an updated note created via REST API."
+}

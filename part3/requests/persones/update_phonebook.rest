@@ -1,0 +1,7 @@
+PUT http://127.0.1:3001/api/persons/5
+Content-Type: application/json
+
+  {
+    "name": "Phone",
+    "number": "122-345-6789"
+  }
