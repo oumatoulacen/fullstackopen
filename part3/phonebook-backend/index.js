@@ -3,7 +3,7 @@ const json = require('body-parser');
 const morgan = require('morgan');
 const fs = require("fs");
 const path = require("path"); 
-const cors = require('cors');
+// const cors = require('cors');
 
 // helpers variables
 const PORT = process.env.PORT || 3001;
@@ -51,7 +51,8 @@ const findIndexById = (id) => {
 const app = express(); 
 
 // Middlewares
-app.use(cors()); // Enable CORS for all routes
+// app.use(cors()); // Enable CORS for all routes
+app.use(express.static('dist')); // Serve static files from the build directory
 app.use(json.json()); // Parses JSON bodies
 app.use(json.urlencoded({ extended: true })); // Parses URL-encoded bodies
 
