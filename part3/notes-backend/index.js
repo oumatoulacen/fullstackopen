@@ -1,8 +1,12 @@
 const express = require('express')
+const cors = require('cors')
+
 const app = express()
 
-
+// middlewares
+app.use(cors())
 app.use(express.json())
+app.use(express.static('dist'))
 
 let notes = [
     {
@@ -29,11 +33,6 @@ const generateId = () => {
     return String(maxId + 1)
 }
 
-
-
-app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
-})
 
 app.get('/api/notes', (request, response) => {
     response.json(notes)
@@ -78,8 +77,29 @@ app.delete('/api/notes/:id', (request, response) => {
     response.status(204).end()
 })
 
+app.put('/api/notes/:id', (request, response) => {
+    const id = request.params.id
+    const body = request.body
 
-const PORT = 3001
+    if (!body.content) {
+        return response.status(400).json({
+            error: 'content missing'
+        })
+    }
+
+    const note = {
+        content: body.content,
+        important: body.important || false,
+        id: id,
+    }
+
+    notes = notes.map(n => n.id === id ? note : n)
+
+    response.json(note)
+})
+
+
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
