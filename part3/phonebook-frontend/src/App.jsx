@@ -47,14 +47,16 @@ const App = () => {
             persons.map((p) => (p.id !== person.id ? p : updatedPerson))
           )
           notifyWith(`Phonenumber of ${updatedPerson.name} updated!`)
-          clearForm()
         })
         .catch(() => {
           notifyWith(
-            `Information of ${person.name} has already been removed from server`,
+            `Information of ${person.name} has already been removed from server or something went wrong`,
             true
           )
           setPersons(persons.filter((p) => p.name !== person.name))
+        })
+        .finally(() => {
+          clearForm()
         })
     }
   }
@@ -73,6 +75,14 @@ const App = () => {
       .then((createdPerson) => {
         setPersons(persons.concat(createdPerson))
         notifyWith(`Added ${createdPerson.name}`)
+      })
+      .catch((error) => {
+        notifyWith(
+          `Error: ${error.response.data.error}`,
+          true
+        )
+      })
+      .finally(() => {
         clearForm()
       })
   }
@@ -83,6 +93,13 @@ const App = () => {
       personService
         .remove(person.id)
         .then(() => setPersons(persons.filter((p) => p.id !== person.id)))
+        .catch(() => {
+          notifyWith(
+            `Information of ${person.name} has already been removed from server or something went wrong`,
+            true
+          )
+          setPersons(persons.filter((p) => p.name !== person.name))
+        })
 
       notifyWith(`Deleted ${person.name}`)
     }

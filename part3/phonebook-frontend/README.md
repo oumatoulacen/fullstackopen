@@ -1,4 +1,4 @@
-fullstackopen part 3 Exercises 3.9.-3.11
+fullstackopen part 3 Exercises Exercises 3.13.-3.14.
 
 
 using react to create a simple app for a phonebook
