@@ -1,7 +1,7 @@
-PUT http://127.0.1:3001/api/persons/5
+PUT http://127.0.1:3001/api/persons/68210861bf2872a1decf2b79
 Content-Type: application/json
 
-  {
-    "name": "Phone",
-    "number": "122-345-6789"
-  }
+{
+  "name": "John Doe",
+  "number": 1234567890
+}

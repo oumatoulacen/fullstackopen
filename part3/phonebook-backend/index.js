@@ -26,35 +26,45 @@ app.use(morgan(':method :url :status :res[name-length] - :response-time ms :body
     }
 }))
 
-// seed some data
-// const seedData = [
-//     { name: 'Arto Hellas', number: '040-123456' },
-//     { name: 'Ada Lovelace', number: '39-44-5323523' },
-//     { name: 'Dan Abramov', number: '12-43-234345' },
-//     { name: 'Mary Poppendieck', number: '39-23-6423122' }
-// ]
-// console.log('Seeding database with initial data...')
-// Person.insertMany(seedData).then(() => {
-//     console.log('Database seeded successfully.')
-// }
-// ).catch((error) => {
-//     console.error('Error seeding database:', error)
-// })
+// error handling middleware
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
 
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
+    }
+
+    next(error)
+}
 
 // routes
-app.get('/api/persons', (request, response) => {
+app.get('/', (request, response) => {
+    response.send('<h1>Phonebook backend</h1>')
+})
+
+app.get('/api/info', (request, response, next) => {
+    Person.countDocuments({})
+        .then(count => {
+            const date = new Date()
+            response.send(`
+                <p>Phonebook has info for ${count} people</p>
+                <p>${date}</p>
+            `)
+        })
+        .catch(error => next(error))
+})
+
+app.get('/api/persons', (request, response, next) => {
     Person.find({})
         .then(Persons => {
             response.json(Persons)
         })
-        .catch(error => {
-            console.error(error)
-            response.status(500).send({ error: 'something went wrong' })
-        })
+        .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
 
     if (!body.number) {
@@ -62,8 +72,6 @@ app.post('/api/persons', (request, response) => {
     } else if (!body.name) {
         return response.status(400).json({ error: 'name missing' })
     }
-
-    // ... check if name already exists in case request is made outside of the browser
 
     const person = new Person({
         name: body.name,
@@ -74,35 +82,57 @@ app.post('/api/persons', (request, response) => {
         .then(savedPerson => {
             return response.json(savedPerson)
         })
-        .catch(error => {
-            console.error(error)
-            return response.status(500).send({ error: 'something went wrong' })
-        })
+        .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id)
         .then(Person => {
-            return response.json(Person)
+            if (Person) {
+                return response.json(Person)
+            } else {
+                return response.status(404).json({ error: 'person not found' })
+            }
         })
-        .catch(error => {
-            console.log(error)
-            return response.status(400).send({ error: 'malformatted id' })
-        })
+        .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
     const id = request.params.id
     Person.findByIdAndDelete(id)
         .then(() => {
-            return response.status(204).end()
+            return response.status(204).json()
         })
-        .catch(error => {
-            console.error(error)
-            return response.status(400).send({ error: 'malformatted id' })
-        })
+        .catch(error => next(error))
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+    const id = request.params.id
+    const body = request.body
+
+    Person.findById(id)
+        .then(Person => {
+            if (!Person) {
+                return response.status(404).json({ error: 'person not found' })
+            }
+            Person.name = body.name
+            Person.number = body.number
+            return Person.save()
+        })
+        .then(updatedPerson => {
+            return response.json(updatedPerson)
+        })
+        .catch(error => next(error))
+})
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
+// middleware to handle unknown endpoints
+app.use(unknownEndpoint)
+// middleware  to handle errors
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
