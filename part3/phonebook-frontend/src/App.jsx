@@ -14,9 +14,11 @@ const App = () => {
   const [notification, setNotification] = useState({ message: null })
 
   useEffect(() => {
-    personService.getAll().then((initialPersons) => {
-      setPersons(initialPersons)
-    })
+    personService.getAll()
+      .then((initialPersons) => { setPersons(initialPersons) })
+      .catch((error) => {
+        notifyWith(error.response.data.error, true)
+      })
   }, [])
 
   const personsToShow = persons.filter((person) =>
@@ -48,12 +50,8 @@ const App = () => {
           )
           notifyWith(`Phonenumber of ${updatedPerson.name} updated!`)
         })
-        .catch(() => {
-          notifyWith(
-            `Information of ${person.name} has already been removed from server or something went wrong`,
-            true
-          )
-          setPersons(persons.filter((p) => p.name !== person.name))
+        .catch((error) => {
+          notifyWith(error.response.data.error, true)
         })
         .finally(() => {
           clearForm()
@@ -63,12 +61,33 @@ const App = () => {
 
   const onAddNew = (event) => {
     event.preventDefault()
-    const existingPerson = persons.find((p) => p.name === newName)
 
+    // Check if the number already exists
+    if (newNumber.trim() === '') {
+      notifyWith('Please provide a number', true)
+      console.log('Number is empty')
+      return
+    }
+    if (newName.trim() === '') {
+      notifyWith('Please provide a name', true)
+      return
+    }
+
+    if (persons.find((p) => p.number === newNumber)) {
+      notifyWith(
+        `${newNumber} is already added to phonebook`,
+        true
+      )
+      clearForm()
+      return
+    }
+    const existingPerson = persons.find((p) => p.name === newName)
     if (existingPerson) {
       updatePerson(existingPerson)
       return
     }
+
+    console.log('Adding new person, name', newName, "num", newNumber)
 
     personService
       .create({ name: newName, number: newNumber })
@@ -77,10 +96,8 @@ const App = () => {
         notifyWith(`Added ${createdPerson.name}`)
       })
       .catch((error) => {
-        notifyWith(
-          `Error: ${error.response.data.error}`,
-          true
-        )
+        console.log('At catch: ', error)
+        notifyWith(error.response.data.error, true)
       })
       .finally(() => {
         clearForm()
@@ -93,12 +110,8 @@ const App = () => {
       personService
         .remove(person.id)
         .then(() => setPersons(persons.filter((p) => p.id !== person.id)))
-        .catch(() => {
-          notifyWith(
-            `Information of ${person.name} has already been removed from server or something went wrong`,
-            true
-          )
-          setPersons(persons.filter((p) => p.name !== person.name))
+        .catch((error) => {
+          notifyWith(error.response.data.error, true)
         })
 
       notifyWith(`Deleted ${person.name}`)

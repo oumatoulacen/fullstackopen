@@ -1,4 +1,4 @@
-PART 3 Exercises 3.15.-3.18.
+PART 3 Exercises 3.19.-3.21.
 
 
 

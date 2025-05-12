@@ -67,12 +67,6 @@ app.get('/api/persons', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
     const body = request.body
 
-    if (!body.number) {
-        return response.status(400).json({ error: 'number missing' })
-    } else if (!body.name) {
-        return response.status(400).json({ error: 'name missing' })
-    }
-
     const person = new Person({
         name: body.name,
         number: body.number
@@ -136,5 +130,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`)
+    console.log(`Server running on PORT ${PORT}`)
 })
