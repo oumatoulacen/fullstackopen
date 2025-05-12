@@ -12,7 +12,7 @@ app.use(express.json())
 app.use(express.static('dist'))
 
 app.use(morgan('tiny', {
-    skip: (req, res) => {
+    skip: (req) => {
         return req.method === 'POST'
     }
 }))
@@ -21,7 +21,7 @@ morgan.token('body', (req) => {
     return JSON.stringify(req.body)
 })
 app.use(morgan(':method :url :status :res[name-length] - :response-time ms :body', {
-    skip: (req, res) => {
+    skip: (req) => {
         return req.method !== 'POST'
     }
 }))
@@ -71,7 +71,7 @@ app.post('/api/persons', (request, response, next) => {
         name: body.name,
         number: body.number
     })
-        
+
     person.save()
         .then(savedPerson => {
             return response.json(savedPerson)
