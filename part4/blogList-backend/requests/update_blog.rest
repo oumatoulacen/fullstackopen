@@ -1,0 +1,9 @@
+PUT http://127.0.0.1:3000/api/blogs/682a5801cecb857ccd92fcce
+Content-Type: application/json
+
+{
+    "title": "Updated Blog Title",
+    "author": "Updated Author",
+    "url": "https://updated-url.com",
+    "likes": 10
+}

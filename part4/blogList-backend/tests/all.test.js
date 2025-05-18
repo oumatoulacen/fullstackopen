@@ -108,7 +108,7 @@ describe('HTTP GET /api/blogs', () => {
   })
 })
 
-describe.only('HTTP POST /api/blogs', () => {
+describe('HTTP POST /api/blogs', () => {
   test('a valid blog can be added', async () => {
     const newBlog = {
       title: "First class tests",
@@ -161,6 +161,75 @@ describe.only('HTTP POST /api/blogs', () => {
 
     const blogsAtEnd = await api.get('/api/blogs')
     assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length)
+  })
+})
+
+describe("HTTP DELETE /api/blogs/:id", async () => {
+  test("a blog can be deleted", async () => {
+    const blogsAtStart = await api.get("/api/blogs")
+    const blogToDelete = blogsAtStart.body[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAtEnd = await api.get("/api/blogs")
+    assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length - 1)
+    const titles = blogsAtEnd.body.map(b => b.title)
+    assert.ok(!titles.includes(blogToDelete.title))
+  })
+
+  test("a blog that does not exist cannot be deleted", async () => {
+    const nonExistingId = new mongoose.Types.ObjectId().toString()
+    await api
+      .delete(`/api/blogs/${nonExistingId}`)
+      .expect(204)
+
+    const blogsAtEnd = await api.get("/api/blogs")
+    assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length)
+  })
+})
+
+describe("HTTP PUT /api/blogs/:id", () => {
+  test("a blog can be updated", async () => {
+    const blogsAtStart = await api.get("/api/blogs")
+    const blogToUpdate = blogsAtStart.body[0]
+    const updatedBlog = {
+      title: "Updated title",
+      author: "Updated author",
+      url: "Updated url",
+      likes: 100,
+    }
+
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect("Content-Type", /application\/json/)
+    assert.deepStrictEqual(response.body, {
+      ...blogToUpdate,
+      ...updatedBlog,
+      id: blogToUpdate.id,
+    })
+    const blogsAtEnd = await api.get("/api/blogs")
+    const titles = blogsAtEnd.body.map(b => b.title)
+    assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length)
+    assert.ok(titles.includes(updatedBlog.title))
+  })
+
+  test("a blog that does not exist cannot be updated", async () => {
+    const nonExistingId = new mongoose.Types.ObjectId().toString()
+    const updatedBlog = {
+      title: "Updated title",
+      author: "Updated author",
+      url: "Updated url",
+      likes: 100,
+    }
+
+    const response = await api
+      .put(`/api/blogs/${nonExistingId}`)
+      .send(updatedBlog)
+      .expect(404)
   })
 })
 
