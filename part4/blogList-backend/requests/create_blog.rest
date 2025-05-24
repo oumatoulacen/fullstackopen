@@ -1,9 +1,0 @@
-POST http://127.0.0.1:3000/api/blogs/
-Content-Type: application/json
-
-{
-    "title": "New Blog Title",
-    "author": "New Author",
-    "url": "https://new-url.com",
-    "likes": 5
-}

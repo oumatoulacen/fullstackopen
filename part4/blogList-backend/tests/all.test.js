@@ -164,7 +164,7 @@ describe('HTTP POST /api/blogs', () => {
   })
 })
 
-describe("HTTP DELETE /api/blogs/:id", async () => {
+describe("HTTP DELETE /api/blogs/:id", () => {
   test("a blog can be deleted", async () => {
     const blogsAtStart = await api.get("/api/blogs")
     const blogToDelete = blogsAtStart.body[0]
