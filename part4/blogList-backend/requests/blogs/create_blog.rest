@@ -1,10 +1,10 @@
 POST http://127.0.0.1:3000/api/blogs/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cI6IkpXVCJ9.eyJ1c2VybmtZSI6InJvb3QxIiwiaWQiOiI2ODJlNWY1M2NjOTkyYWJjZDFiN2VlOTkiLCJpYXQiOjE3NDgwNDMyMTMsImV4cCI6MTc0ODA0NjgxM30.HcMngitPK8cXfKZSrdC4mmRtt1x_e9uR4MIiD-5h2Ac
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2ODRjMDcwM2U0MTg0OTIzYjczYWJlOWUiLCJpYXQiOjE3NDk4MTMwMTMsImV4cCI6MTc0OTgxNjYxM30.fo8wG8btoDpQJ8Zu6c-xsn2Ibo6CuaOneRnlsPch7xs
 
 {
-    "title": "New Blog Post",
-    "author": "New Author",
-    "url": "https://new-url.com",
+    "title": "New Blog Post fromadmin",
+    "author": "New admin",
+    "url": "https://new-url-admin.com",
     "likes": 5
 }
