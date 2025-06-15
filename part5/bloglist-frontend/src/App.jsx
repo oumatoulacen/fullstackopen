@@ -12,6 +12,8 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(null);
+  const [view, setView] = useState(null);
+
   const blogFormRef = useRef();
 
   const notify = (message, type = "info") => {
@@ -62,7 +64,7 @@ const App = () => {
           </Tagglable>
           <br />
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} view={view} setView={setView} />
           ))}
         </div>
       )}
