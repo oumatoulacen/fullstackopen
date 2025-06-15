@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
+import Tagglable from "./components/Tagglable";
 import './app.css'
 
 
@@ -11,6 +12,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(null);
+  const blogFormRef = useRef();
 
   const notify = (message, type = "info") => {
     setNotification({ message, type });
@@ -55,7 +57,9 @@ const App = () => {
             {user.name} logged in <button onClick={logout}>logout</button>
           </p>
 
-          <BlogForm setBlogs={setBlogs} notify={notify} />
+          <Tagglable buttonLabel="create new blog" ref={blogFormRef}>
+            <BlogForm setBlogs={setBlogs} notify={notify} blogFormRef={blogFormRef} />
+          </Tagglable>
           <br />
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />

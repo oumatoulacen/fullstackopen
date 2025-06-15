@@ -14,10 +14,15 @@ function LoginForm({ setUser, notify }) {
                 blogService.setToken(user.token)
                 notify(`Welcome ${user.name}`, 'success')
                 window.localStorage.setItem('loggedUserInfo', JSON.stringify(user))
+
             })
             .catch(error => {
                 console.error('Login failed:', error)
                 notify('Login failed. Please check your credentials.', 'error')
+            })
+            .finally(() => {
+                setPassword('')
+                setUsername('')
             })
     }
 
