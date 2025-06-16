@@ -1,31 +1,32 @@
-import { useState, forwardRef, useImperativeHandle } from "react"
+/* eslint-disable react/display-name */
+import { useState, forwardRef, useImperativeHandle } from 'react'
 
 
 const Tagglable = forwardRef((props, ref) => {
-    const [visible, setVisible] = useState(false)
-    const toggleVisibility = () => {
-        setVisible(!visible)
+  const [visible, setVisible] = useState(false)
+  const toggleVisibility = () => {
+    setVisible(!visible)
+  }
+
+  useImperativeHandle(ref, () => {
+    // Expose the toggleVisibility function to the parent component
+    return {
+      toggleVisibility
     }
+  })
 
-    useImperativeHandle(ref, () => {
-        // Expose the toggleVisibility function to the parent component
-        return {
-            toggleVisibility
-        }
-    })
-
-    return (
-        <div>
-            {visible && (
-                <div className="tagglableContent">
-                    {props.children}
-                </div>
-            )}
-            <button className="cancel" onClick={toggleVisibility}>
-                {visible ? "cancel" : props.buttonLabel}
-            </button>
+  return (
+    <div>
+      {visible && (
+        <div className='tagglableContent'>
+          {props.children}
         </div>
-    )
+      )}
+      <button className='cancel' onClick={toggleVisibility}>
+        {visible ? 'cancel' : props.buttonLabel}
+      </button>
+    </div>
+  )
 })
 
 export default Tagglable
