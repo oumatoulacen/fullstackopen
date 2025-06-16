@@ -64,7 +64,7 @@ const App = () => {
           </Tagglable>
           <br />
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} view={view} setView={setView} />
+            <Blog key={blog.id} blog={blog} setBlogs={setBlogs} view={view} setView={setView} notify={notify} />
           ))}
         </div>
       )}
