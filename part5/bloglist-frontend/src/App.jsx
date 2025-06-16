@@ -36,6 +36,14 @@ const App = () => {
     }
   }, []);
 
+  const sortBlogs = (blogs) => {
+    return blogs.sort((a, b) => b.likes - a.likes);
+  };
+
+  useEffect(() => {
+    setBlogs((prevBlogs) => sortBlogs(prevBlogs));
+  }, [blogs]);
+
   const logout = () => {
     setUser(null);
     blogService.setToken(null);
