@@ -23,8 +23,12 @@ const App = () => {
     }, 5000);
   }
 
+  const sortBlogs = (blogs) => {
+    return blogs.sort((a, b) => b.likes - a.likes);
+  };
+
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => setBlogs(sortBlogs(blogs)));
   }, []);
 
   useEffect(() => {
@@ -36,9 +40,6 @@ const App = () => {
     }
   }, []);
 
-  const sortBlogs = (blogs) => {
-    return blogs.sort((a, b) => b.likes - a.likes);
-  };
 
   useEffect(() => {
     setBlogs((prevBlogs) => sortBlogs(prevBlogs));
