@@ -1,7 +1,7 @@
 import blogService from "../services/blogs";
 
 const Blog = ({ blog, setBlogs, view, setView, notify }) => {
-    const blogStyle = {
+  const blogStyle = {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
@@ -28,19 +28,35 @@ const Blog = ({ blog, setBlogs, view, setView, notify }) => {
     }
   };
 
+  const handleRemove = async (id) => {
+    if (window.confirm(`Remove blog "${blog.title}" by ${blog.author}?`)) {
+      try {
+        await blogService.remove(id);
+        setBlogs((blogs) => blogs.filter((blog) => blog.id !== id));
+        notify(`Blog "${blog.title}" removed`, "success");
+      } catch (error) {
+        notify("Error removing blog", "error");
+      }
+    }
+  }
+
   return view === blog.id ? (
     <div style={blogStyle}>
-      <h5>{blog.title} <span className="italic">{blog.author}</span> <button onClick={() => setView(null)}>hide</button></h5>
+      <h5>{blog.title} <span className="italic">{blog.author}</span> <button className="hide" onClick={() => setView(null)}>hide</button></h5>
       <h5>{blog.url}</h5>
-      <h5>Likes: {blog.likes} <button onClick={() => handleLike(blog.id)}>like</button> </h5>
+      <h5>Likes: {blog.likes} <button className="like" onClick={() => handleLike(blog.id)}>like</button> </h5>
       <h5>Added By {blog.user.name}</h5>
+      {blog.user && blog.user.username === JSON.parse(window.localStorage.getItem("loggedUserInfo")).username &&
+        <button className='remove' onClick={() => handleRemove(blog.id)}>Remove</button>
+      }
     </div>
-  ) :
-  <div>
-    <p>
-      {blog.title} <span className="italic">{blog.author} </span><button onClick={() => setView(blog.id)}>view</button>
-    </p>
-  </div>
+  ) : (
+    <div>
+      <p>
+        {blog.title} <span className="italic">{blog.author} </span><button className="view" onClick={() => setView(blog.id)}>view</button>
+      </p>
+    </div>
+  );
 };
 
 export default Blog

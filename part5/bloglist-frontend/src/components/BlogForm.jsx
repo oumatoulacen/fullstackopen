@@ -48,7 +48,7 @@ function BlogForm({setBlogs, notify, blogFormRef}) {
                 <label htmlFor="likes">Likes:</label>
                 <input type="number" id="likes" value={likes} onChange={e => setLikes(parseInt(e.target.value) || 0)} />
             </div>
-            <button type="submit">Create</button>
+            <button type="submit" className='create'>Create</button>
         </form>
     </>
 }

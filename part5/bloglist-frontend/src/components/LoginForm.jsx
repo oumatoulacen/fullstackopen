@@ -37,7 +37,7 @@ function LoginForm({ setUser, notify }) {
                     <label htmlFor="password">Password:</label>
                     <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit" className='login'>Login</button>
             </form>
         </div>
     )

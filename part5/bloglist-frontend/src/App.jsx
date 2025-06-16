@@ -64,7 +64,7 @@ const App = () => {
           <h2>blogs</h2>
           <Notification notification={notification} />
           <p>
-            {user.name} logged in <button onClick={logout}>logout</button>
+            {user.name} logged in <button onClick={logout} className="logout">logout</button>
           </p>
 
           <Tagglable buttonLabel="create new blog" ref={blogFormRef}>

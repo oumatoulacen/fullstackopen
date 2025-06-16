@@ -21,7 +21,7 @@ const Tagglable = forwardRef((props, ref) => {
                     {props.children}
                 </div>
             )}
-            <button onClick={toggleVisibility}>
+            <button className="cancel" onClick={toggleVisibility}>
                 {visible ? "cancel" : props.buttonLabel}
             </button>
         </div>

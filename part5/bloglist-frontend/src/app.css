@@ -29,3 +29,102 @@
 h5 {
   margin: 5px;
 }
+
+.remove {
+  padding: 3px;
+  background-color: #f5c6cb;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 6px;
+  margin: 0 0 0 5px;
+  cursor: pointer;
+  color: #721c24;
+}
+
+.like {
+  padding: 3px;
+  background-color: #6af8fd;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 6px;
+  margin: 0 0 0 5px;
+  cursor: pointer;
+  color: #155724;
+}
+
+.hide {
+  padding: 3px;
+  background-color: #ecf5f6;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 6px;
+  margin: 0 0 0 5px;
+  cursor: pointer;
+  color: #0c5460;
+}
+
+.view {
+  padding: 3px;
+  background-color: #6ee1f6;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 6px;
+  margin: 0 0 0 5px;
+  cursor: pointer;
+  color: #0c5460;
+}
+
+
+.logout {
+  padding: 3px;
+  background-color: #f7c9a8c8;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 6px;
+  margin: 0 0 0 5px;
+  cursor: pointer;
+  color: #383d41;
+}
+
+.login {
+  padding: 3px;
+  background-color: #31efd9;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 6px;
+  margin: 0 0 0 5px;
+  cursor: pointer;
+  color: #383d41;
+}
+
+.create {
+  padding: 3px;
+  background-color: #5b9cfc;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 6px;
+  margin: 0 0 0 5px;
+  cursor: pointer;
+  color: #383d41;
+}
+
+.cancel {
+  padding: 3px;
+  background-color: #eabb76;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 6px;
+  margin: 0 0 0 5px;
+  cursor: pointer;
+  color: #383d41;
+} 
+
+.create:hover,
+.login:hover,
+.logout:hover,
+.remove:hover,
+.like:hover,
+.hide:hover,
+.view:hover {
+  opacity: 0.8;
+}
