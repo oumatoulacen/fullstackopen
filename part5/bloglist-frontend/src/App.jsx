@@ -4,7 +4,7 @@ import blogService from './services/blogs'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
-import Tagglable from './components/Tagglable'
+import Togglable from './components/Tagglable'
 import './app.css'
 
 const App = () => {
@@ -69,13 +69,13 @@ const App = () => {
             </button>
           </p>
 
-          <Tagglable buttonLabel="create new blog" ref={blogFormRef}>
+          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
             <BlogForm
               setBlogs={setBlogs}
               notify={notify}
               blogFormRef={blogFormRef}
             />
-          </Tagglable>
+          </Togglable>
           <br />
           {blogs.map((blog) => (
             <Blog
