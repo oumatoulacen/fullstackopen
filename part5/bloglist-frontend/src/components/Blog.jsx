@@ -42,9 +42,9 @@ const Blog = ({ blog, setBlogs, view, setView, notify }) => {
 
   return view === blog.id ? (
     <div style={blogStyle}>
-      <h5>{blog.title} <span className="italic">{blog.author}</span> <button className="hide" onClick={() => setView(null)}>hide</button></h5>
+      <h5>{blog.title} <span className="italic">{blog.author}</span> <button className="hide" onClick={() => setView(null)}>Hide</button></h5>
       <h5>{blog.url}</h5>
-      <h5>Likes: {blog.likes} <button className="like" onClick={() => handleLike(blog.id)}>like</button> </h5>
+      <h5>Likes: {blog.likes} <button className="like" onClick={() => handleLike(blog.id)}>Like</button> </h5>
       <h5>Added By {blog.user.name}</h5>
       {blog.user && blog.user.username === JSON.parse(window.localStorage.getItem('loggedUserInfo')).username &&
         <button className='remove' onClick={() => handleRemove(blog.id)}>Remove</button>
@@ -53,7 +53,7 @@ const Blog = ({ blog, setBlogs, view, setView, notify }) => {
   ) : (
     <div>
       <p>
-        {blog.title} <span className="italic">{blog.author} </span><button className="view" onClick={() => setView(blog.id)}>view</button>
+        {blog.title} <span className="italic">{blog.author} </span><button className="view" onClick={() => setView(blog.id)}>View</button>
       </p>
     </div>
   )

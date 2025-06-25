@@ -65,11 +65,11 @@ const App = () => {
           <p>
             {user.name} logged in{' '}
             <button onClick={logout} className="logout">
-              logout
+              Logout
             </button>
           </p>
 
-          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+          <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
             <BlogForm
               setBlogs={setBlogs}
               notify={notify}
