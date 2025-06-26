@@ -13,6 +13,22 @@ const resetDb = async ( request ) => {
       name: 'Admin',
     }
   })
+
+  await request.post('/api/users', {
+    data: {
+      username: 'root',
+      password: 'password',
+      name: 'Root',
+    }
+  })
 }
 
-module.exports = { login, resetDb }
+const createBlog = async (page, title, author, url) => {
+  await page.getByText('Create New Blog').click()
+  await page.getByLabel('Title').fill(title)
+  await page.getByLabel('Author').fill(author)
+  await page.getByLabel('URL').fill(url)
+  await page.getByRole('button', { name: 'Create' }).click()
+}
+
+module.exports = { login, resetDb, createBlog }
