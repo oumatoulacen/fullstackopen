@@ -40,4 +40,26 @@ describe('Blog app', () => {
       await expect(page.getByText('Admin logged in')).not.toBeVisible()
     })
   })
+
+
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await login(page, 'admin', 'password')
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      await page.getByText('Create New Blog').click()
+      await expect(page.getByText('Create New Blog')).toBeVisible()
+      await page.getByLabel('Title').fill('My new blog')
+      await page.getByLabel('Author').fill('Admin')
+      await page.getByLabel('URL').fill('https://example.com/my-new-blog')
+      await page.getByRole('button', { name: 'Create' }).click()
+
+      const notification = page.locator('.notification')
+      await expect(notification).toHaveText('A new blog "My new blog" by Admin added')
+
+      await expect(page.getByText('My new blog Admin View')).toBeVisible()
+      await expect(page.getByRole('button', { name: 'View' })).toBeVisible()
+    })
+  })
 })
