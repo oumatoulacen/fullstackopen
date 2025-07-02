@@ -12,6 +12,11 @@ export const newAntedote = (content) => ({
   },
 });
 
+export const filterAnecdotes = (filter) => ({
+  type: 'FILTER',
+  payload: { filter }
+});
+
 const anecdotesAtStart = [
   "If it hurts, do it more often",
   "Adding manpower to a late software project makes it later!",
@@ -46,6 +51,12 @@ const reducer = (state = initialState, action) => {
       );
     case "NEW":
       return sortedAnecdotes(state.concat(asObject(action.payload.content)));
+    case 'FILTER':
+      // use initialState to simulate database fetching instead of filtering the state directly
+      // or use a second variable to keep all anecdotes and filter them instead of the state
+      return sortedAnecdotes(state.filter(anecdote =>
+        anecdote.content.toLowerCase().includes(action.payload.filter.toLowerCase())
+      ));
     default:
       return state;
   }
