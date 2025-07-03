@@ -7,16 +7,8 @@ const anecdoteSlice = createSlice({
   initialState: [],
   reducers: {
     vote: (state, action) => {
-      const id = action.payload;
-      const anecdote = state.find(a => a.id === id);
-      const updatedAnecdote = { ...anecdote, votes: anecdote.votes + 1 };
-      return sortedAnecdotes(state.map(a => a.id !== id ? a : updatedAnecdote));
-    },
-    newAnecdote: (state, action) => {
-      const content = action.payload;
-      const newAnecdote = asObject(content)
-      anecdoteService.createNew(newAnecdote)
-      return sortedAnecdotes(state.concat(newAnecdote));
+      const updatedAnecdote = action.payload;
+      return sortedAnecdotes(state.map(a => a.id !== updatedAnecdote.id ? a : updatedAnecdote));
     },
     filterAnecdotes: (state, action) => {
       const filter = action.payload.toLowerCase();
@@ -32,6 +24,33 @@ const anecdoteSlice = createSlice({
     }
   }
 });
+
+// Thunk to fetch anecdotes from the server
+export const initializeAnecdotes = () => {
+  return async (dispatch) => {
+    const anecdotes = await anecdoteService.getAll();
+    dispatch(setAnecdotes(anecdotes));
+  };
+};
+
+// Thunk to vote for anecdotes
+export const voteAnecdote = (id) => {
+  return async (dispatch, getState) => {
+    const anecdote = getState().anecdotes.find(a => a.id === id);
+    if (anecdote) {
+      const updatedAnecdote = await anecdoteService.update(id, { ...anecdote, votes: anecdote.votes + 1 });
+      dispatch(vote(updatedAnecdote));
+    }
+  };
+}
+
+// Thunk to create new anecdote
+export const createAnecdote = (content) => {
+  return async (dispatch) => {
+    const newAnecdote = await anecdoteService.create(asObject(content));
+    dispatch(appendAnecdotes(newAnecdote));
+  };
+}
 
 export const { vote, newAnecdote, filterAnecdotes, appendAnecdotes, setAnecdotes } = anecdoteSlice.actions;
 const reducer = anecdoteSlice.reducer;
