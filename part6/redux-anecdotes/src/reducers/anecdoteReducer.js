@@ -1,31 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import sortedAnecdotes from "../utils/sorting";
-
-const anecdotesAtStart = [
-  "If it hurts, do it more often",
-  "Adding manpower to a late software project makes it later!",
-  "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
-  "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
-  "Premature optimization is the root of all evil.",
-  "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
-];
-
-const getId = () => (100000 * Math.random()).toFixed(0);
-
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    id: getId(),
-    votes: 0,
-  };
-};
-
-const initialState = sortedAnecdotes(anecdotesAtStart.map(asObject));
-
+import sortedAnecdotes, { asObject } from "../utils/anecdotes";
+import anecdoteService from '../services/anecdotes'
 
 const anecdoteSlice = createSlice({
   name: 'anecdotes',
-  initialState,
+  initialState: [],
   reducers: {
     vote: (state, action) => {
       const id = action.payload;
@@ -33,30 +12,27 @@ const anecdoteSlice = createSlice({
       const updatedAnecdote = { ...anecdote, votes: anecdote.votes + 1 };
       return sortedAnecdotes(state.map(a => a.id !== id ? a : updatedAnecdote));
     },
-    newAntedote: (state, action) => {
+    newAnecdote: (state, action) => {
       const content = action.payload;
-      const newAnecdote = {
-        content,
-        id: getId(),
-        votes: 0,
-      };
+      const newAnecdote = asObject(content)
+      anecdoteService.createNew(newAnecdote)
       return sortedAnecdotes(state.concat(newAnecdote));
     },
     filterAnecdotes: (state, action) => {
       const filter = action.payload.toLowerCase();
-      // use initialState to simulate database fetching instead of filtering the already filtered state directly
       return sortedAnecdotes(state.filter(anecdote =>
         anecdote.content.toLowerCase().includes(filter)
       ));
+    },
+    appendAnecdotes: (state, action) => {
+      return sortedAnecdotes(state.concat(action.payload));
+    },
+    setAnecdotes: (state, action) => {
+      return sortedAnecdotes(action.payload);
     }
   }
 });
 
-
-
-export const { vote, newAntedote, filterAnecdotes } = anecdoteSlice.actions;
+export const { vote, newAnecdote, filterAnecdotes, appendAnecdotes, setAnecdotes } = anecdoteSlice.actions;
 const reducer = anecdoteSlice.reducer;
-
-
-
 export default reducer;
