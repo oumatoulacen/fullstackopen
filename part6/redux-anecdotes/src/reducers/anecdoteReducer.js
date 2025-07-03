@@ -1,21 +1,5 @@
+import { createSlice } from "@reduxjs/toolkit";
 import sortedAnecdotes from "../utils/sorting";
-
-export const vote = (id) => ({
-  type: "VOTE",
-  payload: { id }
-});
-
-export const newAntedote = (content) => ({
-  type: "NEW",
-  payload: {
-    content
-  },
-});
-
-export const filterAnecdotes = (filter) => ({
-  type: 'FILTER',
-  payload: { filter }
-});
 
 const anecdotesAtStart = [
   "If it hurts, do it more often",
@@ -38,28 +22,41 @@ const asObject = (anecdote) => {
 
 const initialState = sortedAnecdotes(anecdotesAtStart.map(asObject));
 
-const reducer = (state = initialState, action) => {
-  console.log("action", action);
-  switch (action.type) {
-    case "VOTE":
-      return sortedAnecdotes(
-        state.map((anecdote) => {
-          return anecdote.id !== action.payload.id
-            ? anecdote
-            : { ...anecdote, votes: anecdote.votes + 1 };
-        })
-      );
-    case "NEW":
-      return sortedAnecdotes(state.concat(asObject(action.payload.content)));
-    case 'FILTER':
-      // use initialState to simulate database fetching instead of filtering the state directly
-      // or use a second variable to keep all anecdotes and filter them instead of the state
+
+const anecdoteSlice = createSlice({
+  name: 'anecdotes',
+  initialState,
+  reducers: {
+    vote: (state, action) => {
+      const id = action.payload;
+      const anecdote = state.find(a => a.id === id);
+      const updatedAnecdote = { ...anecdote, votes: anecdote.votes + 1 };
+      return sortedAnecdotes(state.map(a => a.id !== id ? a : updatedAnecdote));
+    },
+    newAntedote: (state, action) => {
+      const content = action.payload;
+      const newAnecdote = {
+        content,
+        id: getId(),
+        votes: 0,
+      };
+      return sortedAnecdotes(state.concat(newAnecdote));
+    },
+    filterAnecdotes: (state, action) => {
+      const filter = action.payload.toLowerCase();
+      // use initialState to simulate database fetching instead of filtering the already filtered state directly
       return sortedAnecdotes(state.filter(anecdote =>
-        anecdote.content.toLowerCase().includes(action.payload.filter.toLowerCase())
+        anecdote.content.toLowerCase().includes(filter)
       ));
-    default:
-      return state;
+    }
   }
-};
+});
+
+
+
+export const { vote, newAntedote, filterAnecdotes } = anecdoteSlice.actions;
+const reducer = anecdoteSlice.reducer;
+
+
 
 export default reducer;
