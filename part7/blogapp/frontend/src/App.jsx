@@ -52,7 +52,6 @@ const App = () => {
   const handleCreate = async (blog) => {
     const newBlog = await blogService.create(blog);
     dispatch(addBlog(newBlog));
-    console.log("new blog", newBlog);
     notify(`Blog created: ${newBlog.title}, ${newBlog.author}`);
     blogFormRef.current.toggleVisibility();
   };
