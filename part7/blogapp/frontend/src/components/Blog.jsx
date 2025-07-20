@@ -11,7 +11,11 @@ const Blog = ({ blog, handleVote, handleDelete }) => {
     border: "solid",
     padding: 10,
     borderWidth: 1,
-    marginBottom: 5,
+    margin: 10,
+    backgroundColor: "#f9f9f9",
+    borderRadius: 5,
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    transition: "box-shadow 0.3s ease",
   };
 
   const canRemove = blog.user ? blog.user.username === storage.me() : true;

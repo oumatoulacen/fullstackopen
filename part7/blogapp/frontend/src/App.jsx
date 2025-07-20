@@ -1,4 +1,6 @@
 import { useState, useEffect, createRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setNotification, clearNotification } from "./reducers/notification";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -12,7 +14,8 @@ import Togglable from "./components/Togglable";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState(null);
+  const notification = useSelector((state) => state.notification);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -28,9 +31,9 @@ const App = () => {
   const blogFormRef = createRef();
 
   const notify = (message, type = "success") => {
-    setNotification({ message, type });
+    dispatch(setNotification({ message, type }));
     setTimeout(() => {
-      setNotification(null);
+      dispatch(clearNotification());
     }, 5000);
   };
 
@@ -79,7 +82,7 @@ const App = () => {
 
   if (!user) {
     return (
-      <div>
+      <div className="container">
         <h2>blogs</h2>
         <Notification notification={notification} />
         <Login doLogin={handleLogin} />
@@ -90,7 +93,7 @@ const App = () => {
   const byLikes = (a, b) => b.likes - a.likes;
 
   return (
-    <div>
+    <div className="container">
       <h2>blogs</h2>
       <Notification notification={notification} />
       <div>

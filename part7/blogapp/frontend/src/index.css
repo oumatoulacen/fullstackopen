@@ -1,0 +1,37 @@
+.container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  color: #333;
+}
+
+p {
+  color: #555;
+}
+
+button {
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #91bdeb;
+  transform: scale(1.05);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
