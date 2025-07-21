@@ -2,6 +2,7 @@ import { useState, useEffect, createRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setNotification, clearNotification } from "./reducers/notificationReducer";
 import { setBlogs, addBlog, updateBlog, removeBlog } from "./reducers/blogsReducer";
+import { setUser, clearUser } from "./reducers/userReducer";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -13,7 +14,7 @@ import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 
 const App = () => {
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user);
   const notification = useSelector((state) => state.notification);
   const blogs = useSelector((state) => state.blogs);
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const App = () => {
   useEffect(() => {
     const user = storage.loadUser();
     if (user) {
-      setUser(user);
+      dispatch(setUser(user));
     }
   }, []);
 
@@ -41,7 +42,8 @@ const App = () => {
   const handleLogin = async (credentials) => {
     try {
       const user = await loginService.login(credentials);
-      setUser(user);
+      dispatch(setUser(user));
+      // Save user to local storage for persistence
       storage.saveUser(user);
       notify(`Welcome back, ${user.name}`);
     } catch (error) {
@@ -57,7 +59,6 @@ const App = () => {
   };
 
   const handleVote = async (blog) => {
-    console.log("updating", blog);
     const updatedBlog = await blogService.update(blog.id, {
       ...blog,
       likes: blog.likes + 1,
@@ -68,7 +69,7 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    setUser(null);
+    dispatch(clearUser());
     storage.removeUser();
     notify(`Bye, ${user.name}!`);
   };
@@ -77,7 +78,6 @@ const App = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       await blogService.remove(blog.id);
       dispatch(removeBlog(blog.id));
-      blogFormRef.current.toggleVisibility();
       notify(`Blog ${blog.title}, by ${blog.author} removed`);
     }
   };
