@@ -3,7 +3,7 @@ import { useState, forwardRef, useImperativeHandle } from "react";
 const Togglable = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
 
-  const hideWhenVisible = { display: visible ? "none" : "" };
+  const hideWhenVisible = { display: visible ? "none" : "", marginBottom: "10px" };
   const showWhenVisible = { display: visible ? "" : "none" };
 
   const toggleVisibility = () => {

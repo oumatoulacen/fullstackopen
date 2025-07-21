@@ -1,17 +1,25 @@
-import { useState, useEffect, createRef } from "react";
+import { useState, useEffect, createRef, useParams } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Route, Routes } from "react-router-dom";
+
 import { setNotification, clearNotification } from "./reducers/notificationReducer";
 import { setBlogs, addBlog, updateBlog, removeBlog } from "./reducers/blogsReducer";
 import { setUser, clearUser } from "./reducers/userReducer";
-
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import userService from "./services/users";
+
 import storage from "./services/storage";
 import Login from "./components/Login";
 import Blog from "./components/Blog";
 import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
+import Menu from "./components/Menu";
+import About from "./components/About";
+import Users from "./components/Users";
+import UserDetails from "./components/UserDetails";
+import BlogDetails from "./components/BlogDetails";
 
 const App = () => {
   const user = useSelector((state) => state.user);
@@ -96,23 +104,30 @@ const App = () => {
 
   return (
     <div className="container">
-      <h2>blogs</h2>
+      <Menu user={user} doLogout={handleLogout} />
       <Notification notification={notification} />
-      <div>
-        {user.name} logged in
-        <button onClick={handleLogout}>logout</button>
-      </div>
-      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-        <NewBlog doCreate={handleCreate} />
-      </Togglable>
-      { blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleVote={handleVote}
-          handleDelete={handleDelete}
-        />
-      ))}
+      {/* <h2>blogs</h2> */}
+      <Routes>
+        <Route path="/" element={
+          <div>
+            <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+              <NewBlog doCreate={handleCreate} />
+            </Togglable>
+            {blogs.map((blog) => (
+              <Blog
+                key={blog.id}
+                blog={blog}
+              />
+            ))}
+          </div>
+        } />
+        <Route path="/about" element={<About />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<UserDetails />} />
+        <Route path="/blogs/:id" element={
+          <BlogDetails blogs={blogs} handleVote={handleVote} handleDelete={handleDelete} />
+        } />
+      </Routes>
     </div>
   );
 };

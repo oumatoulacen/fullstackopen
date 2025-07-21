@@ -16,6 +16,7 @@ body {
 
 h1, h2, h3 {
   color: #333;
+  margin: 10px 5px;
 }
 
 p {
@@ -28,10 +29,19 @@ button {
   background-color: #007bff;
   color: white;
   cursor: pointer;
+  padding: 5px 15px;
+  margin-left: 10px;
 }
 
 button:hover {
   background-color: #91bdeb;
   transform: scale(1.05);
   transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.blog {
+  border: 1px solid #6d7ce1;
+  padding: 0 10px;
+  border-radius: 5px;
+  margin: 10px 0;
 }
