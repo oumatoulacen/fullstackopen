@@ -49,7 +49,7 @@ router.delete("/:id", userExtractor, async (request, response) => {
   await blog.deleteOne();
 
   user.blogs = user.blogs.filter(
-    (b) => b._id.toString() !== blog._id.toString(),
+    (b) => b._id.toString() !== blog._id.toString()
   );
 
   await user.save();
@@ -71,6 +71,24 @@ router.put("/:id", async (request, response) => {
     new: true,
   }).populate("user", { username: 1, name: 1 });
   response.json(updatedBlog);
+});
+
+// This endpoint is used to add a comment to a blog post
+router.post("/:id/comments", async (request, response) => {
+  const { comment } = request.body;
+
+  const blog = await Blog.findById(request.params.id).populate("user", {
+    username: 1,
+    name: 1,
+  });
+  if (!blog) {
+    return response.status(404).json({ error: "blog not found" });
+  }
+
+  blog.comments = blog.comments.concat(comment);
+  await blog.save();
+
+  response.status(201).json(blog);
 });
 
 module.exports = router;

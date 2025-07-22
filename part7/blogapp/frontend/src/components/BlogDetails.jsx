@@ -1,12 +1,40 @@
 import PropTypes from "prop-types";
 import { useParams, useNavigate } from "react-router-dom";
-import storage from "../services/storage";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-const BlogDetails = ({ blogs, handleVote, handleDelete }) => {
+import storage from "../services/storage";
+import blogService from "../services/blogs";
+
+const BlogDetails = ({ blogs, handleVote, handleDelete, setBlogs, notify }) => {
+  const navigate = useNavigate();
+  const [comment, setComment] = useState("");
+  const dispatch = useDispatch();
   const { id } = useParams();
-    const navigate = useNavigate();
   const blog = blogs.find(b => b.id === id);
 
+  const addCommentSubmit = (event) => {
+    event.preventDefault();
+    if (comment.trim() === "") {
+      return;
+    }
+    blogService.addComment(blog.id, comment)
+      .then(updatedBlog => {
+        notify("Comment added successfully");
+        dispatch(setBlogs(blogs.map(b => (b.id === updatedBlog.id ? updatedBlog : b))));
+      })
+      .catch(error => {
+        notify("Failed to add comment");
+      })
+      .finally(() => {
+        setComment(""); // Clear the comment input after submission
+      });
+  };
+
+  const handleCommentChange = (event) => {
+    setComment(event.target.value);
+  };
+  
   if (!blog) {
     return <div>Blog not found</div>;
   }
@@ -32,14 +60,29 @@ const BlogDetails = ({ blogs, handleVote, handleDelete }) => {
       {blog.user && blog.user.username === storage.me() && (
         <button onClick={handleRemove}>remove</button>
       )}
+      <h3>Comments</h3>
+      <form onSubmit={addCommentSubmit}>
+        <input type="text" name="comment" placeholder="Add a comment" required value={comment} onChange={handleCommentChange} />
+        <button type="submit">Add Comment</button>
+      </form>
+      {blog.comments && blog.comments.length > 0 ? (
+        <ul>
+          {blog.comments.map((comment, index) => (
+            <li key={index}>{comment}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No comments yet.</p>
+      )}
     </div>
- );
+  );
 }
 
 BlogDetails.propTypes = {
   blogs: PropTypes.array.isRequired,
   handleVote: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
+  setBlogs: PropTypes.func.isRequired,
 };
 
 export default BlogDetails;

@@ -125,7 +125,13 @@ const App = () => {
         <Route path="/users" element={<Users />} />
         <Route path="/users/:id" element={<UserDetails />} />
         <Route path="/blogs/:id" element={
-          <BlogDetails blogs={blogs} handleVote={handleVote} handleDelete={handleDelete} />
+          <BlogDetails
+            blogs={blogs}
+            handleVote={handleVote}
+            handleDelete={handleDelete}
+            setBlogs={setBlogs}
+            notify={notify}
+          />
         } />
       </Routes>
     </div>
