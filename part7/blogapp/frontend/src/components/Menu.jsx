@@ -20,9 +20,15 @@ const linkStyle = {
 function Menu({ user, doLogout }) {
   return (
     <div style={Menustyle}>
-      <Link to="/" style={linkStyle}>Home</Link>
-      <Link to="/about" style={linkStyle}>About</Link>
-      <Link to="/users" style={linkStyle}>Users</Link>
+      <Link to="/" style={linkStyle}>
+        Home
+      </Link>
+      <Link to="/about" style={linkStyle}>
+        About
+      </Link>
+      <Link to="/users" style={linkStyle}>
+        Users
+      </Link>
       {user && (
         <div style={{ display: 'inline-block', marginLeft: '60px' }}>
           {user.name} logged in
@@ -32,6 +38,5 @@ function Menu({ user, doLogout }) {
     </div>
   )
 }
-
 
 export default Menu
