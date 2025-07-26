@@ -128,6 +128,11 @@ const typeDefs = `
       author: String!
       genres: [String!]!
     ): Book!
+
+    editAuthor(
+      name: String!
+      setBornTo: Int!
+    ): AuthorDetails
   }
 `;
 
@@ -167,6 +172,19 @@ const resolvers = {
 				});
 			}
 			return newBook;
+		},
+		editAuthor: (_root, args) => {
+			const author = authors.find((a) => a.name === args.name);
+			if (!author) {
+				return null; // Author not found
+			}
+			author.born = args.setBornTo;
+			return {
+				name: author.name,
+				id: author.id,
+				born: author.born,
+				bookCount: books.filter((book) => book.author === author.name).length,
+			};
 		},
 	},
 };
