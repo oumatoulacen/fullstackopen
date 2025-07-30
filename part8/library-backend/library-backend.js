@@ -1,6 +1,7 @@
 const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { v4: uuidv4 } = require('uuid');
+const { GraphQLError } = require('graphql');
 
 let authors = [
 	{
@@ -167,6 +168,50 @@ const resolvers = {
 
 	Mutation: {
 		addBook: (_root, args) => {
+			if (books.find((book) => book.title === args.title)) {
+				throw new GraphQLError('Book already exists', {
+					extensions: {
+						code: 'BAD_USER_INPUT',
+						invalidArgs: args.title,
+					},
+				});
+			}
+			if (!args.title || !args.author || !args.published || !args.genres) {
+				throw new GraphQLError(
+					`${!args.title ? 'Title' : ''} ${!args.author ? 'Author' : ''} ${
+						!args.published ? 'Published' : ''
+					} ${!args.genres ? 'Genres' : ''} must be provided`,
+					{
+						extensions: {
+							code: 'BAD_USER_INPUT',
+							invalidArgs: args,
+						},
+					}
+				);
+			}
+			if (args.published < 0) {
+				throw new GraphQLError('Published year must be a positive integer', {
+					extensions: { code: 'BAD_USER_INPUT', argumentName: 'published' },
+				});
+			}
+			if (!Array.isArray(args.genres)) {
+				throw new GraphQLError('Genres must be an array', {
+					extensions: {
+						code: 'BAD_USER_INPUT',
+						invalidArgs: args.genres,
+					},
+				});
+			}
+			if (args.genres.some((genre) => typeof genre !== 'string')) {
+				throw new GraphQLError('All genres must be strings', {
+					extensions: {
+						code: 'BAD_USER_INPUT',
+						invalidArgs: args.genres.filter(
+							(genre) => typeof genre !== 'string'
+						),
+					},
+				});
+			}
 			const newBook = {
 				title: args.title,
 				published: args.published,
