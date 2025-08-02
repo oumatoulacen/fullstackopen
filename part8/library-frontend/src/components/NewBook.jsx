@@ -5,7 +5,7 @@ import { ADD_BOOK, ALL_BOOKS, ALL_AUTHORS } from '../queries';
 const NewBook = ({ show, notify }) => {
 	const [title, setTitle] = useState('');
 	const [author, setAuthor] = useState('');
-	const [published, setPublished] = useState('');
+	const [published, setPublished] = useState(0);
 	const [genre, setGenre] = useState('');
 	const [genres, setGenres] = useState([]);
 
@@ -20,7 +20,7 @@ const NewBook = ({ show, notify }) => {
 				return;
 			}
 			const message = error.graphQLErrors.map((e) => e.message).join('\n');
-			notify(`\`\`\`${message}\`\`\``, 'error');
+			notify(message, 'error');
 		},
 		skip: !show,
 	});
@@ -43,7 +43,7 @@ const NewBook = ({ show, notify }) => {
 		});
 
 		setTitle('');
-		setPublished('');
+		setPublished(0);
 		setAuthor('');
 		setGenres([]);
 		setGenre('');

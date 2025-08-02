@@ -5,9 +5,9 @@ import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries';
 
 const Authors = ({ show, notify }) => {
 	const [selectedAuthor, setSelectedAuthor] = useState('');
-	const [birthYear, setBirthYear] = useState('');
+	const [birthYear, setBirthYear] = useState(0);
 
-	const [editAuthor, result] = useMutation(EDIT_AUTHOR, {
+	const [editAuthor] = useMutation(EDIT_AUTHOR, {
 		refetchQueries: [{ query: ALL_AUTHORS }],
 		skip: !show, // Skip the mutation if the component is not shown
 		onError: (error) => {
@@ -16,11 +16,15 @@ const Authors = ({ show, notify }) => {
 				return;
 			}
 			const message = error.graphQLErrors.map((e) => e.message).join('\n');
-			notify(`\`\`\`${message}\`\`\``, 'error');
+			notify(message, 'error');
+			setSelectedAuthor('');
+			setBirthYear(0);
 		},
 		// Reset the form after mutation is completed
 		onCompleted: () => {
 			notify(`Birth year updated for ${selectedAuthor}`, 'success');
+			setSelectedAuthor('');
+			setBirthYear(0);
 		},
 	});
 
@@ -42,21 +46,12 @@ const Authors = ({ show, notify }) => {
 
 	const handleSetBirthYear = async (event) => {
 		event.preventDefault();
-		if (!selectedAuthor || !birthYear) {
-			notify('Please select an author and enter a birth year', 'error');
-			return;
-		}
 		await editAuthor({
 			variables: {
 				name: selectedAuthor,
 				setBornTo: parseInt(birthYear, 10),
 			},
 		});
-		if (!result.data.editAuthor) {
-			notify(`Author ${selectedAuthor} not found`, 'error');
-		}
-		setSelectedAuthor('');
-		setBirthYear('');
 	};
 
 	return (

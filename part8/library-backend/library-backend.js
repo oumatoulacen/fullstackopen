@@ -201,10 +201,33 @@ const resolvers = {
 					},
 				});
 			}
+			if (!args.name || !args.setBornTo) {
+				throw new GraphQLError('Name and birth year must be provided', {
+					extensions: {
+						code: 'BAD_USER_INPUT',
+						invalidArgs: { name: args.name, setBornTo: args.setBornTo },
+					},
+				});
+			}
+			if (typeof args.setBornTo !== 'number' || args.setBornTo < 0) {
+				throw new GraphQLError('Birth year must be a positive integer', {
+					extensions: {
+						code: 'BAD_USER_INPUT',
+						invalidArgs: args.setBornTo,
+					},
+				});
+			}
+
 			const author = await Author.findOne({ name: args.name });
 			if (!author) {
-				return null; // Author not found
+				throw new GraphQLError('Author not found', {
+					extensions: {
+						code: 'BAD_USER_INPUT',
+						invalidArgs: args.name,
+					},
+				});
 			}
+
 			try {
 				author.born = args.setBornTo;
 				await author.save();
