@@ -12,7 +12,7 @@ const NewBook = ({ show, notify }) => {
 	const [addBook] = useMutation(ADD_BOOK, {
 		refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
 		onCompleted: () => {
-			notify(`Book added: ${title}`, 'success');
+			// notify(`Book added: ${title}`, 'success');
 		},
 		onError: (error) => {
 			if (!error.graphQLErrors || error.graphQLErrors.length === 0) {

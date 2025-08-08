@@ -102,3 +102,20 @@ export const CREATE_USER = gql`
 		}
 	}
 `;
+
+export const BOOK_DETAILS = gql`
+	fragment BookDetails on Book {
+		title
+		published
+		genres
+	}
+`;
+
+export const BOOK_ADDED = gql`
+	subscription {
+		bookAdded {
+			...BookDetails
+		}
+	}
+	${BOOK_DETAILS}
+`;
