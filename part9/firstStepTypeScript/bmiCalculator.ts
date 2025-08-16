@@ -32,4 +32,12 @@ const calculateBmi = (height: number, weight: number): string => {
 	}
 };
 
-console.log(calculateBmi(150, 70));
+if (process.argv.length < 4) {
+	console.error('Usage: npm run calculateBmi <height> <weight>');
+	process.exit(1);
+}
+
+const height = Number(process.argv[2]);
+const weight = Number(process.argv[3]);
+
+console.log(calculateBmi(height, weight));

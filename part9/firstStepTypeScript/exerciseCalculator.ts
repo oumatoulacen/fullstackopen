@@ -8,6 +8,23 @@ interface ExerciseCalculation {
 	average: number;
 }
 
+const parseArguments = (args: string[]): [number[], number] => {
+	if (args.length < 4)
+		throw new Error(
+			'Usage: npm run calculateExercises <target> <hour1> <hour2> ...'
+		);
+
+	const target = Number(args[2]);
+	if (isNaN(target)) throw new Error(`The target ${args[2]} is not a number`);
+	const dailyExerciseHours = args.slice(3).map((arg) => {
+		const num = Number(arg);
+		if (isNaN(num)) throw new Error(`The argument ${arg} is not a number`);
+		return num;
+	});
+
+	return [dailyExerciseHours, target];
+};
+
 const calculateExercises = (
 	dailyExerciseHours: number[],
 	target: number
@@ -31,4 +48,6 @@ const calculateExercises = (
 	};
 };
 
-console.log(calculateExercises([3, 0, 2, 4, 1], 4));
+const [dailyExerciseHours, target] = parseArguments(process.argv);
+
+console.log(calculateExercises(dailyExerciseHours, target));
