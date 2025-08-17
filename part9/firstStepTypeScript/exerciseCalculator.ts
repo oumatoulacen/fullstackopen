@@ -48,6 +48,11 @@ const calculateExercises = (
 	};
 };
 
-const [dailyExerciseHours, target] = parseArguments(process.argv);
+if (require.main === module) {
+	const [dailyExerciseHours, target] = parseArguments(process.argv);
 
-console.log(calculateExercises(dailyExerciseHours, target));
+	console.log(calculateExercises(dailyExerciseHours, target));
+}
+
+export default calculateExercises;
+export type { ExerciseCalculation };

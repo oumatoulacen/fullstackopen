@@ -32,12 +32,15 @@ const calculateBmi = (height: number, weight: number): string => {
 	}
 };
 
-if (process.argv.length < 4) {
-	console.error('Usage: npm run calculateBmi <height> <weight>');
-	process.exit(1);
+if (require.main === module) {
+	if (process.argv.length < 4) {
+		console.error('Usage: npm run calculateBmi <height> <weight>');
+		process.exit(1);
+	}
+
+	const height = Number(process.argv[2]);
+	const weight = Number(process.argv[3]);
+	console.log(calculateBmi(height, weight));
 }
 
-const height = Number(process.argv[2]);
-const weight = Number(process.argv[3]);
-
-console.log(calculateBmi(height, weight));
+export default calculateBmi;
