@@ -4,6 +4,7 @@
 		"target": "ES6",
 		"module": "commonjs",
 		"esModuleInterop": true,
+		// "lib": ["es6", "es7"],
 
 		// File Layout
 		"outDir": "./build/",
