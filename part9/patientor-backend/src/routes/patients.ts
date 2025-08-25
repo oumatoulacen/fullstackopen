@@ -16,17 +16,10 @@ patientsRouter.get('/', (_req, res: Response<NonSensitivePatient[]>) => {
 	res.send(getNonSensitivePatients());
 });
 
-patientsRouter.get(
-	'/:id',
-	(req, res: Response<NonSensitivePatient | undefined>) => {
-		const patient = getPatientById(req.params.id);
-		if (patient) {
-			res.send(getNonSensitivePatients().find((p) => p.id === patient.id));
-		} else {
-			res.sendStatus(404);
-		}
-	}
-);
+patientsRouter.get('/:id', (req, res: Response<Patient | undefined>) => {
+	const patient = getPatientById(req.params.id);
+	return patient ? res.send(patient) : res.sendStatus(404);
+});
 
 const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
 	try {
